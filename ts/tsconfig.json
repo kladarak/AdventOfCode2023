@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+      "target": "ES6",
+      "module": "NodeNext",
+      "sourceMap": true,
+      "outDir": "build"
+    }
+  }
+  

@@ -1,2 +1,5 @@
 /cpp/.vs
 /cpp/x64
+/ts/node_modules
+/ts/build
+*.bak
