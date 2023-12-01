@@ -1,7 +1,9 @@
+#define currentday day02
+
 int main()
 {
-	extern void day01();
-	day01();
+	extern void currentday();
+	currentday();
 
 	return 0;
 }

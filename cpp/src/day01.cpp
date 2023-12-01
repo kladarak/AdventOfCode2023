@@ -35,9 +35,9 @@ enum class ConsiderText
 	True
 };
 
-int calculateSum(const char* filename, ConsiderText considerTextMode)
+static int process(const char* filename, ConsiderText considerTextMode)
 {
-	std::fstream s{ filename, s.in };
+	std::fstream s{filename, s.in};
 	assert(s.is_open());
 
 	int sum = 0;
@@ -83,9 +83,8 @@ int calculateSum(const char* filename, ConsiderText considerTextMode)
 
 void day01()
 {
-	assert(calculateSum("data/01/test.txt", ConsiderText::False) == 142);
-	assert(calculateSum("data/01/real.txt", ConsiderText::False) == 55816);
-
-	assert(calculateSum("data/01/test2.txt", ConsiderText::True) == 281);
-	assert(calculateSum("data/01/real.txt", ConsiderText::True) == 54980);
+	assert(process("../data/01/test.txt", ConsiderText::False) == 142);
+	assert(process("../data/01/real.txt", ConsiderText::False) == 55816);
+	assert(process("../data/01/test2.txt", ConsiderText::True) == 281);
+	assert(process("../data/01/real.txt", ConsiderText::True) == 54980);
 }
