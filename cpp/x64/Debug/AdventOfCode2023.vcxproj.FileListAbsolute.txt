@@ -1,0 +1,2 @@
+C:\Users\Scott\source\repos\AdventOfCode2023\x64\Debug\AdventOfCode2023.exe
+C:\Users\Scott\source\repos\AdventOfCode2023\cpp\x64\Debug\AdventOfCode2023.exe

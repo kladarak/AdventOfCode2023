@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "0db41163-f3b7-463e-a7b8-a76dd652d9c3": {
+      "ProjectGuid": "0db41163-f3b7-463e-a7b8-a76dd652d9c3",
+      "DisplayName": "AdventOfCode2023",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
