@@ -18,67 +18,58 @@ struct Game
 	std::vector<Set> sets;
 };
 
-Game parseGame(const std::string& gameString)
+static std::vector<std::string> delimit(const std::string& str, const char delimiter)
 {
 	std::vector<std::string> tokens;
 
-	{
-		size_t pos = 0;
+	size_t pos = 0;
 
-		while (true)
-		{
-			size_t nextPos = gameString.find(' ', pos);
-			if (nextPos != std::string::npos)
-			{
-				tokens.push_back(gameString.substr(pos, nextPos - pos));
-				pos = nextPos + 1;
-			}
-			else
-			{
-				tokens.push_back(gameString.substr(pos));
-				break;
-			}
-		}
+	while (pos != std::string::npos)
+	{
+		const size_t nextPos = str.find(delimiter, pos);
+		tokens.push_back(str.substr(pos, nextPos - pos));
+		pos = nextPos != std::string::npos ? nextPos + 1 : std::string::npos;
 	}
 
-	assert(tokens.front() == "Game");
+	return tokens;
+}
+
+static Game parseGame(const std::string& gameString)
+{
+	const std::vector<std::string> tokens = delimit(gameString, ' ');
 
 	Game game;
-	game.id = std::stoull(tokens[1]);
 	game.sets.push_back({});
 
 	uint64_t currentNum = 0;
 
-	for (size_t i = 2; i < tokens.size(); ++i)
+	for (const std::string& token : tokens)
 	{
-		const auto& token = tokens[i];
+		Set& set = game.sets.back();
 
-		if (std::isdigit(token.front()))
-		{
+		if (token == "Game")
+			assert(token == tokens.front());
+		else if (game.id == 0)
+			game.id = std::stoull(token);
+		else if (std::isdigit(token.front()))
 			currentNum = std::stoull(token);
-		}
+		else if (token.find("red") != std::string::npos)
+			set.red = currentNum;
+		else if (token.find("green") != std::string::npos)
+			set.green = currentNum;
+		else if (token.find("blue") != std::string::npos)
+			set.blue = currentNum;
 		else
-		{
-			Set& set = game.sets.back();
+			assert(false);
 
-			if (token.find("red") != std::string::npos)
-				set.red = currentNum;
-			else if (token.find("green") != std::string::npos)
-				set.green = currentNum;
-			else if (token.find("blue") != std::string::npos)
-				set.blue = currentNum;
-			else
-				assert(false);
-
-			if (token.back() == ';')
-				game.sets.push_back({});
-		}
+		if (token.back() == ';')
+			game.sets.push_back({});
 	}
 
 	return game;
 }
 
-std::vector<Game> loadGames(const char* filename)
+static std::vector<Game> loadGames(const char* filename)
 {
 	std::vector<Game> games;
 
@@ -98,7 +89,7 @@ std::vector<Game> loadGames(const char* filename)
 	return games;
 }
 
-uint64_t partOne(const std::vector<Game>& games)
+static uint64_t partOne(const std::vector<Game>& games)
 {
 	uint64_t sum = 0;
 
@@ -108,13 +99,12 @@ uint64_t partOne(const std::vector<Game>& games)
 
 	for (const Game& game : games)
 	{
-		bool valid = true;
-		for (const Set& set : game.sets)
+		const bool valid = std::all_of(begin(game.sets), end(game.sets), [] (const Set& set)
 		{
-			valid &= set.red <= maxNumRed
+			return set.red <= maxNumRed
 				&& set.green <= maxNumGreen
 				&& set.blue <= maxNumBlue;
-		}
+		});
 
 		if (valid)
 			sum += game.id;
@@ -123,7 +113,7 @@ uint64_t partOne(const std::vector<Game>& games)
 	return sum;
 }
 
-uint64_t partTwo(const std::vector<Game>& games)
+static uint64_t partTwo(const std::vector<Game>& games)
 {
 	uint64_t sum = 0;
 
@@ -157,8 +147,6 @@ static auto process(const char* filename)
 
 void day02()
 {
-	assert(process("../data/02/test.txt") == std::make_pair((uint64_t) 8, (uint64_t) 2286));
-
-	const auto result = process("../data/02/real.txt");
-	std::cout << "Part One: " << result.first << " Part Two: " << result.second << std::endl;
+	assert(process("../data/02/test.txt") == std::make_pair(8ull, 2286ull));
+	assert(process("../data/02/real.txt") == std::make_pair(2447ull, 56322ull));
 }
