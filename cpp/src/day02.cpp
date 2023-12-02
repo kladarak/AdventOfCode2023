@@ -2,6 +2,7 @@
 #include <cassert>
 #include <fstream>
 #include <iostream>
+#include <numeric>
 #include <optional>
 #include <string>
 #include <vector>
@@ -116,25 +117,20 @@ static std::vector<Game> loadGames(const char* filename)
 static uint64_t partOne(const std::vector<Game>& games)
 {
 	static constexpr Set maxSet = { 12, 13, 14 };
-	static const auto isPossible = [] (const Set& set) { return set.isPossible(maxSet); };
+	static constexpr auto isPossible = [] (const Set& set) { return set.isPossible(maxSet); };
 
-	uint64_t sum = 0;
-
-	for (const Game& game : games)
-		if (std::all_of(begin(game.sets), end(game.sets), isPossible))
-			sum += game.id;
-
-	return sum;
+	return std::accumulate(begin(games), end(games), 0ull, [] (uint64_t sum, const Game& game)
+	{
+		return sum + (game.id * std::all_of(begin(game.sets), end(game.sets), isPossible));
+	});
 }
 
 static uint64_t partTwo(const std::vector<Game>& games)
 {
-	uint64_t sum = 0;
-
-	for (const Game& game : games)
-		sum += game.getMinPossibleSet().getPower();
-
-	return sum;
+	return std::accumulate(begin(games), end(games), 0ull, [] (uint64_t sum, const Game& game)
+	{
+		return sum + game.getMinPossibleSet().getPower();
+	});
 }
 
 static auto process(const char* filename)
