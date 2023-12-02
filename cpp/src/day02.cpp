@@ -2,6 +2,7 @@
 #include <cassert>
 #include <fstream>
 #include <iostream>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -10,12 +11,35 @@ struct Set
 	uint64_t blue = 0;
 	uint64_t red = 0;
 	uint64_t green = 0;
+
+	bool isPossible(const Set& maxSet) const
+	{
+		return red <= maxSet.red
+			&& green <= maxSet.green
+			&& blue <= maxSet.blue;
+	}
+
+	uint64_t getPower() const { return red * green * blue; }
 };
 
 struct Game
 {
 	uint64_t id = 0;
 	std::vector<Set> sets;
+
+	Set getMinPossibleSet() const
+	{
+		Set minSet;
+
+		for (const Set& set : sets)
+		{
+			minSet.red = std::max(minSet.red, set.red);
+			minSet.green = std::max(minSet.green, set.green);
+			minSet.blue = std::max(minSet.blue, set.blue);
+		}
+
+		return minSet;
+	}
 };
 
 static std::vector<std::string> delimit(const std::string& str, const char delimiter)
@@ -91,24 +115,14 @@ static std::vector<Game> loadGames(const char* filename)
 
 static uint64_t partOne(const std::vector<Game>& games)
 {
+	static constexpr Set maxSet = { 12, 13, 14 };
+	static const auto isPossible = [] (const Set& set) { return set.isPossible(maxSet); };
+
 	uint64_t sum = 0;
 
-	static constexpr uint64_t maxNumRed = 12;
-	static constexpr uint64_t maxNumGreen = 13;
-	static constexpr uint64_t maxNumBlue = 14;
-
 	for (const Game& game : games)
-	{
-		const bool valid = std::all_of(begin(game.sets), end(game.sets), [] (const Set& set)
-		{
-			return set.red <= maxNumRed
-				&& set.green <= maxNumGreen
-				&& set.blue <= maxNumBlue;
-		});
-
-		if (valid)
+		if (std::all_of(begin(game.sets), end(game.sets), isPossible))
 			sum += game.id;
-	}
 
 	return sum;
 }
@@ -118,21 +132,7 @@ static uint64_t partTwo(const std::vector<Game>& games)
 	uint64_t sum = 0;
 
 	for (const Game& game : games)
-	{
-		uint64_t maxRed = 0;
-		uint64_t maxGreen = 0;
-		uint64_t maxBlue = 0;
-
-		for (const Set& set : game.sets)
-		{
-			maxRed = std::max(maxRed, set.red);
-			maxGreen = std::max(maxGreen, set.green);
-			maxBlue = std::max(maxBlue, set.blue);
-		}
-
-		const uint64_t power = maxRed * maxGreen * maxBlue;
-		sum += power;
-	}
+		sum += game.getMinPossibleSet().getPower();
 
 	return sum;
 }
@@ -145,8 +145,15 @@ static auto process(const char* filename)
 	return std::make_pair(partOneResult, partTwoResult);
 }
 
+void processPrintAndAssert(const char* filename, std::optional<std::pair<uint64_t, uint64_t>> expected = {})
+{
+	const auto result = process(filename);
+	std::cout << "Part 1: " << result.first << " Part 2: " << result.second << std::endl;
+	assert(!expected || result == expected);
+}
+
 void day02()
 {
-	assert(process("../data/02/test.txt") == std::make_pair(8ull, 2286ull));
-	assert(process("../data/02/real.txt") == std::make_pair(2447ull, 56322ull));
+	processPrintAndAssert("../data/02/test.txt"), std::make_pair(8ull, 2286ull);
+	processPrintAndAssert("../data/02/real.txt"), std::make_pair(2447ull, 56322ull);
 }
