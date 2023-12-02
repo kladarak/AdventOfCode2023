@@ -30,16 +30,15 @@ struct Game
 
 	Set getMinPossibleSet() const
 	{
-		Set minSet;
-
-		for (const Set& set : sets)
+		return std::accumulate(begin(sets), end(sets), Set(), [] (Set minSet, const Set& set) -> Set
 		{
-			minSet.red = std::max(minSet.red, set.red);
-			minSet.green = std::max(minSet.green, set.green);
-			minSet.blue = std::max(minSet.blue, set.blue);
-		}
-
-		return minSet;
+			return
+			{
+				std::max(minSet.red, set.red),
+				std::max(minSet.green, set.green),
+				std::max(minSet.blue, set.blue),
+			};
+		});
 	}
 };
 
