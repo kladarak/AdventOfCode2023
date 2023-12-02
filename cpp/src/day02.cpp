@@ -9,9 +9,9 @@
 
 struct Set
 {
-	uint64_t blue = 0;
 	uint64_t red = 0;
 	uint64_t green = 0;
+	uint64_t blue = 0;
 
 	bool isPossible(const Set& maxSet) const
 	{
@@ -136,9 +136,7 @@ static uint64_t partTwo(const std::vector<Game>& games)
 static auto process(const char* filename)
 {
 	const std::vector<Game> games = loadGames(filename);
-	const uint64_t partOneResult = partOne(games);
-	const uint64_t partTwoResult = partTwo(games);
-	return std::make_pair(partOneResult, partTwoResult);
+	return std::make_pair(partOne(games), partTwo(games));
 }
 
 void processPrintAndAssert(const char* filename, std::optional<std::pair<uint64_t, uint64_t>> expected = {})
@@ -150,6 +148,6 @@ void processPrintAndAssert(const char* filename, std::optional<std::pair<uint64_
 
 void day02()
 {
-	processPrintAndAssert("../data/02/test.txt"), std::make_pair(8ull, 2286ull);
-	processPrintAndAssert("../data/02/real.txt"), std::make_pair(2447ull, 56322ull);
+	processPrintAndAssert("../data/02/test.txt", std::make_pair(8ull, 2286ull));
+	processPrintAndAssert("../data/02/real.txt", std::make_pair(2447ull, 56322ull));
 }
