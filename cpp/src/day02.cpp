@@ -4,6 +4,7 @@
 #include <iostream>
 #include <numeric>
 #include <optional>
+#include <ranges>
 #include <string>
 #include <vector>
 
@@ -42,37 +43,21 @@ struct Game
 	}
 };
 
-static std::vector<std::string> delimit(const std::string& str, const char delimiter)
-{
-	std::vector<std::string> tokens;
-
-	size_t pos = 0;
-
-	while (pos != std::string::npos)
-	{
-		const size_t nextPos = str.find(delimiter, pos);
-		tokens.push_back(str.substr(pos, nextPos - pos));
-		pos = nextPos != std::string::npos ? nextPos + 1 : std::string::npos;
-	}
-
-	return tokens;
-}
-
 static Game parseGame(const std::string& gameString)
 {
-	const std::vector<std::string> tokens = delimit(gameString, ' ');
-
 	Game game;
 	game.sets.push_back({});
 
 	uint64_t currentNum = 0;
 
-	for (const std::string& token : tokens)
+	for (const auto word : std::views::split(gameString, ' '))
 	{
+		const std::string token(&*word.begin(), std::ranges::distance(word));
+
 		Set& set = game.sets.back();
 
 		if (token == "Game")
-			assert(token == tokens.front());
+			continue;
 		else if (game.id == 0)
 			game.id = std::stoull(token);
 		else if (std::isdigit(token.front()))
@@ -138,7 +123,7 @@ static auto process(const char* filename)
 	return std::make_pair(partOne(games), partTwo(games));
 }
 
-void processPrintAndAssert(const char* filename, std::optional<std::pair<uint64_t, uint64_t>> expected = {})
+static void processPrintAndAssert(const char* filename, std::optional<std::pair<uint64_t, uint64_t>> expected = {})
 {
 	const auto result = process(filename);
 	std::cout << "Part 1: " << result.first << " Part 2: " << result.second << std::endl;
