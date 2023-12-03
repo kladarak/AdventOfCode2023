@@ -167,8 +167,9 @@ static void processPrintAndAssert(const char* filename, std::optional<std::pair<
 {
 	const auto result = process(filename);
 	std::cout << "Part 1: " << result.first << " Part 2: " << result.second << std::endl;
-	assert(!expected || result.first == expected.value().first || expected.value().first == 0);
-	assert(!expected || result.second == expected.value().second || expected.value().second == 0);
+
+	assert(!expected || expected.value().first == 0 || result.first == expected.value().first);
+	assert(!expected || expected.value().second == 0 || result.second == expected.value().second);
 }
 
 void day03()
