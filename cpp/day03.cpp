@@ -34,8 +34,9 @@ struct Gear
 	uint64_t ratio() const { return part1->value * part2->value; }
 };
 
-struct Schematic
+class Schematic
 {
+public:
 	std::vector<std::string> data;
 	size_t width = 0;
 	size_t height = 0;
@@ -55,6 +56,7 @@ struct Schematic
 		identifyGears();
 	}
 
+private:
 	void loadData(const char* filename)
 	{
 		std::fstream s{ filename, s.in };
