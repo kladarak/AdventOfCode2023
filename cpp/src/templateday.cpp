@@ -2,6 +2,8 @@
 #include <cassert>
 #include <fstream>
 #include <iostream>
+#include <numeric>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -10,13 +12,18 @@ static auto process(const char* filename)
 	std::fstream s{ filename, s.in };
 	assert(s.is_open());
 
-	return 0;
+	return std::make_pair(0, 0);
+}
+
+static void processPrintAndAssert(const char* filename, std::optional<std::pair<int, int>> expected = {})
+{
+	const auto result = process(filename);
+	std::cout << "Part 1: " << result.first << " Part 2: " << result.second << std::endl;
+	assert(!expected || result == expected);
 }
 
 void day_X_()
 {
-	assert(process("../data/_X_/test.txt") == 0);
-	assert(process("../data/_X_/real.txt") == 0);
-	assert(process("../data/_X_/test2.txt") == 0);
-	assert(process("../data/_X_/real.txt") == 0);
+	processPrintAndAssert("../data/_X_/test.txt");
+	processPrintAndAssert("../data/_X_/real.txt");
 }

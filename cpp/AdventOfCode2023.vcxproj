@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="day03.cpp" />
     <ClCompile Include="src\day01.cpp" />
     <ClCompile Include="src\day02.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -30,6 +31,8 @@
     <Text Include="..\data\01\test2.txt" />
     <Text Include="..\data\02\real.txt" />
     <Text Include="..\data\02\test.txt" />
+    <Text Include="..\data\03\real.txt" />
+    <Text Include="..\data\03\test.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
