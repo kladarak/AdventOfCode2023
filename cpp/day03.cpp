@@ -18,9 +18,11 @@ struct Symbol
 struct Part
 {
 	uint64_t value = 0;
-	size_t mag = 0;
 	size_t x = 0;
 	size_t y = 0;
+
+	size_t width() const { return static_cast<size_t>(log10(value) + 1); }
+	size_t height() const { return 1; }
 };
 
 struct Gear
@@ -87,15 +89,8 @@ struct Schematic
 				if (std::isdigit(c))
 				{
 					const uint64_t partNum = std::stoull(data[row].substr(col));
-					parts.push_back({ partNum, 0, col, row });
-
-					while (col < width && std::isdigit(data[row][col]))
-					{
-						++parts.back().mag;
-						++col;
-					}
-
-					--col;
+					parts.push_back({ partNum, col, row });
+					col += parts.back().width() - 1;
 				}
 				else if (c != '.')
 				{
@@ -107,18 +102,18 @@ struct Schematic
 
 	void buildPartSymbolMap()
 	{
-		std::vector<std::vector<Symbol*>> symbolsPerRow;
+		std::vector<std::vector<const Symbol*>> symbolsPerRow;
 		symbolsPerRow.resize(height);
 
-		for (Symbol& s : symbols)
+		for (const Symbol& s : symbols)
 			symbolsPerRow[s.y].push_back(&s);
 
 		for (const Part& part : parts)
 		{
 			const size_t minX = part.x == 0 ? part.x : part.x - 1;
-			const size_t maxX = std::min(part.x + part.mag, width - 1);
+			const size_t maxX = std::min(part.x + part.width(), width - 1);
 			const size_t minY = part.y == 0 ? part.y : part.y - 1;
-			const size_t maxY = std::min(part.y + 1, height - 1);
+			const size_t maxY = std::min(part.y + part.height(), height - 1);
 
 			for (size_t y = minY; y <= maxY; ++y)
 			{
