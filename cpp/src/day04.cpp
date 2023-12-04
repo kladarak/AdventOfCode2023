@@ -62,12 +62,12 @@ static Game04 parseGame(const std::string& gameString)
 			continue;
 		else if (game.id == 0)
 			game.id = std::stoull(token);
-		else if (std::isdigit(token.front()))
-			(parsingWinning ? game.winningNums : game.cardNums).push_back(std::stoull(token));
 		else if (token == "|")
 			parsingWinning = false;
+		else if (parsingWinning)
+			game.winningNums.push_back(std::stoull(token));
 		else
-			assert(false);
+			game.cardNums.push_back(std::stoull(token));
 	}
 
 	std::sort(begin(game.winningNums), end(game.winningNums));
