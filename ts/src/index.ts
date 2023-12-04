@@ -1,3 +1,3 @@
-import {day01 as currentday} from "./day01"
+import {day02 as currentday} from "./day02"
 
 currentday();

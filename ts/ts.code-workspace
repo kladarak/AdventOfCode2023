@@ -1,10 +1,12 @@
 {
 	"folders": [
 		{
-			"path": "."
+			"name": "data",
+			"path": "../data"
 		},
 		{
-			"path": "../data"
+			"name": "ts",
+			"path": "."
 		}
 	],
 	"settings": {}
