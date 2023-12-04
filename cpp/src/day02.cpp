@@ -24,7 +24,7 @@ struct Set
 	uint64_t getPower() const { return red * green * blue; }
 };
 
-struct Game
+struct Game02
 {
 	uint64_t id = 0;
 	std::vector<Set> sets;
@@ -43,9 +43,9 @@ struct Game
 	}
 };
 
-static Game parseGame(const std::string& gameString)
+static Game02 parseGame(const std::string& gameString)
 {
-	Game game;
+	Game02 game;
 	game.sets.push_back({});
 
 	uint64_t currentNum = 0;
@@ -56,7 +56,7 @@ static Game parseGame(const std::string& gameString)
 
 		Set& set = game.sets.back();
 
-		if (token == "Game")
+		if (token == "Game02")
 			continue;
 		else if (game.id == 0)
 			game.id = std::stoull(token);
@@ -78,9 +78,9 @@ static Game parseGame(const std::string& gameString)
 	return game;
 }
 
-static std::vector<Game> loadGames(const char* filename)
+static std::vector<Game02> loadGames(const char* filename)
 {
-	std::vector<Game> games;
+	std::vector<Game02> games;
 
 	std::fstream s{ filename, s.in };
 	assert(s.is_open());
@@ -98,20 +98,20 @@ static std::vector<Game> loadGames(const char* filename)
 	return games;
 }
 
-static uint64_t partOne(const std::vector<Game>& games)
+static uint64_t partOne(const std::vector<Game02>& games)
 {
 	static constexpr Set maxSet = { 12, 13, 14 };
 	static constexpr auto isPossible = [] (const Set& set) { return set.isPossible(maxSet); };
 
-	return std::accumulate(begin(games), end(games), 0ull, [] (uint64_t sum, const Game& game)
+	return std::accumulate(begin(games), end(games), 0ull, [] (uint64_t sum, const Game02& game)
 	{
 		return sum + (game.id * std::all_of(begin(game.sets), end(game.sets), isPossible));
 	});
 }
 
-static uint64_t partTwo(const std::vector<Game>& games)
+static uint64_t partTwo(const std::vector<Game02>& games)
 {
-	return std::accumulate(begin(games), end(games), 0ull, [] (uint64_t sum, const Game& game)
+	return std::accumulate(begin(games), end(games), 0ull, [] (uint64_t sum, const Game02& game)
 	{
 		return sum + game.getMinPossibleSet().getPower();
 	});
@@ -119,7 +119,7 @@ static uint64_t partTwo(const std::vector<Game>& games)
 
 static auto process(const char* filename)
 {
-	const std::vector<Game> games = loadGames(filename);
+	const std::vector<Game02> games = loadGames(filename);
 	return std::make_pair(partOne(games), partTwo(games));
 }
 

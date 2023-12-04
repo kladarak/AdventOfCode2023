@@ -36,7 +36,10 @@
     <ClCompile Include="src\templateday.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="day03.cpp">
+    <ClCompile Include="src\day04.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\day03.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -61,6 +64,12 @@
     </Text>
     <Text Include="..\data\03\real.txt">
       <Filter>Resource Files\day03</Filter>
+    </Text>
+    <Text Include="..\data\04\real.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="..\data\04\test.txt">
+      <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
 </Project>
