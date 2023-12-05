@@ -4,8 +4,10 @@
 #include <iostream>
 #include <numeric>
 #include <optional>
+#include <ranges>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 static auto loadData(const char* filename)
 {
