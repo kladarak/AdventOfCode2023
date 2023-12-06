@@ -18,10 +18,10 @@ static auto loadData(const char* filename)
 
 	while (s.peek() != EOF)
 	{
-		lines.push_back("");
-		std::string& line = lines.back();
+		std::string line;
 		std::getline(s, line);
 		assert(line.size() > 0);
+		lines.push_back(line);
 	}
 
 	return lines;
