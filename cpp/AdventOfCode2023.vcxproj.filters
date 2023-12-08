@@ -63,6 +63,9 @@
     <ClCompile Include="src\day07.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\day08.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\data\01\real.txt">
@@ -109,6 +112,18 @@
     </Text>
     <Text Include="..\data\07\test.txt">
       <Filter>Resource Files\day07</Filter>
+    </Text>
+    <Text Include="..\data\08\real.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="..\data\08\test.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="..\data\08\test2.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="..\data\08\test3.txt">
+      <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
 </Project>
