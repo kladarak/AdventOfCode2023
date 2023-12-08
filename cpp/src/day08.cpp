@@ -291,5 +291,5 @@ void day08()
 	processPrintAndAssert("../data/08/test.txt", std::make_pair(2ull, 0ull));
 	processPrintAndAssert("../data/08/test2.txt", std::make_pair(6ull, 0ull));
 	processPrintAndAssert("../data/08/test3.txt", std::make_pair(0ull, 6ull));
-	processPrintAndAssert("../data/08/real.txt", std::make_pair(21389ull, 0ull));
+	processPrintAndAssert("../data/08/real.txt", std::make_pair(21389ull, 21083806112641ull));
 }
