@@ -145,5 +145,5 @@ static void processPrintAndAssert(const char* filename, std::optional<std::pair<
 void day09()
 {
 	processPrintAndAssert("../data/09/test.txt", std::make_pair(114, 2));
-	processPrintAndAssert("../data/09/real.txt", std::make_pair(1772145754, 0));
+	processPrintAndAssert("../data/09/real.txt", std::make_pair(1772145754, 867));
 }
