@@ -107,6 +107,46 @@ namespace d10
 				}
 			}
 		}
+
+		bool isInsidePipeLoop(const Pos& pos) const
+		{
+			// Raycast left and count how many pipe crossings there are.
+			// An odd number of crossings means we're inside the loop.
+			int crossings = 0;
+
+			Pos leftPipePos = pos.left();
+
+			while (leftPipePos.isValid())
+			{
+				const Pipe* leftPipe = &getPipe(leftPipePos);
+				if (!leftPipe->isValid())
+				{
+					// keep advancing left until hitting a pipe
+					leftPipePos = leftPipePos.left();
+					continue;
+				}
+
+				// For running segments of pipe, e.g., L-J or FJ etc,
+				// we need to test the ends to see if they go the same direction or not.
+				// If they're the same direction then the pipe was not crossed
+				// (i.e., we're still on the same side of the loop)
+				// e.g., LJ does not cross but FJ does.
+				const bool goesDown = leftPipe->isConnectedTo(leftPipe->below());
+
+				const Pipe* lastPipe = leftPipe;
+				while (lastPipe->isConnectedTo(lastPipe->left()))
+					lastPipe = &getPipe(lastPipe->left());
+
+				if (lastPipe == leftPipe)
+					crossings++; // Pipe was a vertical pipe
+				else if (lastPipe->isConnectedTo(lastPipe->below()) != goesDown)
+					crossings++; // Pipe end goes in a different direction than the start
+
+				leftPipePos = lastPipe->left();
+			}
+
+			return (crossings % 2) == 1;
+		}
 	};
 
 	auto loadData(const char* filename)
@@ -244,37 +284,9 @@ static uint64_t partTwo(const d10::Graph& graph)
 				continue;
 			}
 
+			// boundary change - test if region is inside or outside the loop, and cache while we count this row.
 			if (wasPipe)
-			{
-				int crossings = 0;
-
-				Pos leftPipePos = pos.left();
-
-				while (leftPipePos.isValid())
-				{
-					const Pipe* leftPipe = &graph.getPipe(leftPipePos);
-					if (!leftPipe->isValid())
-					{
-						leftPipePos = leftPipePos.left();
-						continue;
-					}
-
-					const bool goesDown = leftPipe->isConnectedTo(leftPipe->below());
-
-					const Pipe* lastPipe = leftPipe;
-					while (lastPipe->isConnectedTo(lastPipe->left()))
-						lastPipe = &graph.getPipe(lastPipe->left());
-
-					if (lastPipe == leftPipe)
-						crossings++;
-					else if (lastPipe->isConnectedTo(lastPipe->below()) != goesDown)
-						crossings++;
-
-					leftPipePos = lastPipe->left();
-				}
-
-				inside = (crossings % 2) == 1;
-			}
+				inside = graph.isInsidePipeLoop(pos);
 
 			numInside += inside;
 			wasPipe = pipe.isValid();
