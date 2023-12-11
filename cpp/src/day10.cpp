@@ -313,13 +313,11 @@ static void processPrintAndAssert(const char* filename, std::optional<std::pair<
 
 void day10()
 {
-	processPrintAndAssert("../data/day10/test.txt", std::make_pair(4ull, 1ull));
-	processPrintAndAssert("../data/day10/test2.txt", std::make_pair(8ull, 1ull));
-
-	processPrintAndAssert("../data/day10/test3.txt", std::make_pair(0ull, 4ull));
-	processPrintAndAssert("../data/day10/test4.txt", std::make_pair(0ull, 4ull));
-	processPrintAndAssert("../data/day10/test5.txt", std::make_pair(0ull, 8ull));
-	processPrintAndAssert("../data/day10/test6.txt", std::make_pair(0ull, 10ull));
-
-	processPrintAndAssert("../data/day10/real.txt", std::make_pair(6773ull, 493ull));
+	processPrintAndAssert("../data/10/test.txt", std::make_pair(4ull, 1ull));
+	processPrintAndAssert("../data/10/test2.txt", std::make_pair(8ull, 1ull));
+	processPrintAndAssert("../data/10/test3.txt", std::make_pair(0ull, 4ull));
+	processPrintAndAssert("../data/10/test4.txt", std::make_pair(0ull, 4ull));
+	processPrintAndAssert("../data/10/test5.txt", std::make_pair(0ull, 8ull));
+	processPrintAndAssert("../data/10/test6.txt", std::make_pair(0ull, 10ull));
+	processPrintAndAssert("../data/10/real.txt", std::make_pair(6773ull, 493ull));
 }
