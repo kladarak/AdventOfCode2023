@@ -29,6 +29,7 @@
     <ClCompile Include="src\day08.cpp" />
     <ClCompile Include="src\day09.cpp" />
     <ClCompile Include="src\day10.cpp" />
+    <ClCompile Include="src\day11.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\templateday.cpp" />
   </ItemGroup>
@@ -54,13 +55,15 @@
     <Text Include="..\data\08\test3.txt" />
     <Text Include="..\data\09\real.txt" />
     <Text Include="..\data\09\test.txt" />
-    <Text Include="..\data\day10\real.txt" />
-    <Text Include="..\data\day10\test.txt" />
-    <Text Include="..\data\day10\test2.txt" />
-    <Text Include="..\data\day10\test3.txt" />
-    <Text Include="..\data\day10\test4.txt" />
-    <Text Include="..\data\day10\test5.txt" />
-    <Text Include="..\data\day10\test6.txt" />
+    <Text Include="..\data\10\real.txt" />
+    <Text Include="..\data\10\test.txt" />
+    <Text Include="..\data\10\test2.txt" />
+    <Text Include="..\data\10\test3.txt" />
+    <Text Include="..\data\10\test4.txt" />
+    <Text Include="..\data\10\test5.txt" />
+    <Text Include="..\data\10\test6.txt" />
+    <Text Include="..\data\11\real.txt" />
+    <Text Include="..\data\11\test.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
