@@ -189,5 +189,5 @@ static void processPrintAndAssert(const char* filename, int64_t pt1Scale, int64_
 void day11()
 {
 	processPrintAndAssert("../data/11/test.txt", 2, 100, std::make_pair(374, 8410));
-	processPrintAndAssert("../data/11/real.txt", 2, 1'000'000, std::make_pair(9599070, 0));
+	processPrintAndAssert("../data/11/real.txt", 2, 1'000'000, std::make_pair(9599070, 842645913794));
 }
