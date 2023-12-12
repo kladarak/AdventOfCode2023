@@ -21,7 +21,7 @@ struct Vec2
 
 	friend Vec2 operator-(const Vec2& lhs, const Vec2& rhs)
 	{
-		return {lhs .x - rhs.x, lhs.y - rhs.y};
+		return {lhs.x - rhs.x, lhs.y - rhs.y};
 	}
 
 	static int64_t manhattanDistance(const Vec2& lhs, const Vec2& rhs)
