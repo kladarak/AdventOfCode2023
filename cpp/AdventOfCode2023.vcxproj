@@ -31,6 +31,7 @@
     <ClCompile Include="src\day10.cpp" />
     <ClCompile Include="src\day11.cpp" />
     <ClCompile Include="src\day12.cpp" />
+    <ClCompile Include="src\day13.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\templateday.cpp" />
   </ItemGroup>
@@ -67,6 +68,8 @@
     <Text Include="..\data\11\test.txt" />
     <Text Include="..\data\12\real.txt" />
     <Text Include="..\data\12\test.txt" />
+    <Text Include="..\data\13\real.txt" />
+    <Text Include="..\data\13\test.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
