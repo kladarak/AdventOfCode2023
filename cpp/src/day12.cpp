@@ -21,131 +21,104 @@ namespace d12
 		Filled,
 	};
 
-	struct Group
-	{
-		size_t index = 0;
-		int pos = 0;
-		int size = 0;
-	};
-
 	struct SpringRow
 	{
-		using Permutation = std::vector<CellState>;
-
 	public:
 		// input
-		Permutation basePermutation;
-		std::vector<Group> groups;
+		std::vector<CellState> basePermutation;
+		std::vector<int> groupSizes;
 
 		// output
-		std::vector<Permutation> validPermutations;
+		uint64_t numPermutations = 0;
 
 	private:
-		std::vector<std::vector<int>> possibleGroupPositions;
+		std::map<std::pair<size_t, size_t>, uint64_t> memoized;
 
 	public:
 		void evaluatePermutations()
 		{
-			possibleGroupPositions.resize(groups.size());
+			numPermutations = accumulatePermutationsUntilNextFilled(0, 0);
+		}
 
-			// init group sizes
+	private:
+		uint64_t accumulatePermutationsUntilNextFilled(size_t groupIndex, size_t startPos)
+		{
+			uint64_t permCount = 0;
+
+			for (size_t pos = startPos; pos < basePermutation.size(); ++pos)
 			{
-				const int numFilled =
-					std::accumulate(
-						begin(groups),
-						end(groups),
-						0ul,
-						[] (int sum, const auto& g) { return sum + g.size; }
-				);
+				permCount += permutate(groupIndex, pos);
 
-				const int minRowSize = numFilled + (int) groups.size() - 1;
-				const int freedom = (int) basePermutation.size() - minRowSize;
+				// Cannot skip cells that must be filled.
+				if (basePermutation[pos] == CellState::Filled)
+					break;
+			}
 
-				int pos = 0;
-				for (size_t i = 0; i < groups.size(); ++i)
+			return permCount;
+		}
+
+		uint64_t permutate(const size_t groupIndex, const size_t pos)
+		{
+			const auto groupPoskey = std::make_pair(groupIndex, pos);
+
+			if (auto iter = memoized.find(groupPoskey); iter != memoized.end())
+				return iter->second;
+
+			uint64_t permCount = 0;
+
+			if (canGroupFitAtPosition(groupIndex, pos))
+			{
+				const size_t groupSize = groupSizes[groupIndex];
+				const size_t nextPos = pos + groupSize + 1;
+				const size_t nextGroupIndex = groupIndex + 1;
+
+				if (nextGroupIndex < groupSizes.size())
 				{
-					auto& groupPositions = possibleGroupPositions[i];
-					groupPositions.resize(freedom + 1);
-					std::iota(groupPositions.begin(), groupPositions.end(), pos);
-
-					assert(groupPositions.back() < basePermutation.size());
-					pos += groups[i].size + 1; // +1 to leave a gap
+					// Recurse into next group if we have more groups to process
+					permCount = accumulatePermutationsUntilNextFilled(nextGroupIndex, nextPos);
+				}
+				else if (findNextMustFillCellIndex(nextPos) == SIZE_MAX)
+				{
+					// Only consider this a valid permutation if there are no more cells that must be filled.
+					permCount = 1;
 				}
 			}
 
-			// Remove invalid possible positions
-			{
-				for (size_t i = 0; i < groups.size(); ++i)
-				{
-					auto& groupPositions = possibleGroupPositions[i];
-					Group& group = groups[i];
+			// Cache so that when this key is queried again we don't need to recurse through all permutations again.
+			memoized[groupPoskey] = permCount;
 
-					std::erase_if(
-						groupPositions,
-						[&] (int trialPos)
-						{
-							auto beginIter = basePermutation.begin() + trialPos;
-							auto endIter = beginIter + group.size;
-							return std::find_if(
-								beginIter,
-								endIter,
-								[] (CellState s) { return s == CellState::Empty; }
-							) != endIter;
-						}
-					);
+			return permCount;
+		}
 
-					assert(groupPositions.size() > 0);
-					group.pos = groupPositions.front();
-				}
-			}
-			
-			// Build and check permutations
-			{
-				std::function<void (const std::vector<Group>&)> permutate;
-				permutate = [&] (const std::vector<Group>& permutation)
-				{
-					if (permutation.size() == groups.size())
-					{
-						// Here we have a filled permutation - convert into cell state and push it.
-						Permutation permCellState(basePermutation.size(), CellState::Empty);
+		bool canGroupFitAtPosition(const size_t groupIndex, const size_t pos) const
+		{
+			const size_t rowSize = basePermutation.size();
+			const size_t groupSize = groupSizes[groupIndex];
+			const size_t endPos = pos + groupSize;
 
-						for (const Group& g : permutation)
-						{
-							for (int p = g.pos; p < g.pos + g.size; ++p)
-								permCellState[p] = CellState::Filled;
-						}
+			// Cannot fit if group is larger than remaining space in row.
+			if (endPos > rowSize)
+				return false;
 
-						bool isValid = true;
-						for (size_t i = 0; i < permCellState.size(); ++i)
-						{
-							isValid &= (permCellState[i] == basePermutation[i]
-								|| basePermutation[i] == CellState::Unknown);
-						}
+			// Cannot fit if cell that immediately follows must also be filled (groups cannot sit next to each other).
+			if ((endPos < rowSize) && basePermutation[endPos] == CellState::Filled)
+				return false;
 
-						if (isValid)
-							validPermutations.push_back(std::move(permCellState));
-					}
-					else
-					{
-						// Add this group and recurse.
-						const size_t index = permutation.size();
-						const int startPos = index == 0 ? 0 : permutation.back().pos + permutation.back().size + 1;
+			// Cannot fit if any cells must be empty.
+			return std::all_of(
+				begin(basePermutation) + pos,
+				begin(basePermutation) + endPos,
+				[] (CellState s) { return s != CellState::Empty; }
+			);
+		}
 
-						auto nextPerm = permutation;
-						nextPerm.push_back(groups[index]);
-
-						for (int pos : possibleGroupPositions[index])
-						{
-							if (pos >= startPos)
-							{
-								nextPerm.back().pos = pos;
-								permutate(nextPerm);
-							}
-						}
-					}
-				};
-				permutate({});
-			}
+		size_t findNextMustFillCellIndex(const size_t fromPos)
+		{
+			const auto beginIter = begin(basePermutation);
+			const auto endIter = end(basePermutation);
+			const auto fromIter = beginIter + fromPos;
+			const auto foundIter = std::find(fromIter, endIter, CellState::Filled);
+			return foundIter < endIter ? (size_t) (foundIter - beginIter) : SIZE_MAX;
 		}
 	};
 
@@ -156,11 +129,6 @@ namespace d12
 		Springs() = default;
 
 		explicit Springs(const char* filename)
-		{
-			load(filename);
-		}
-
-		void load(const char* filename)
 		{
 			std::fstream s{ filename, s.in };
 			assert(s.is_open());
@@ -193,13 +161,17 @@ namespace d12
 					} ());
 				}
 				
-				auto viewToString = [] (auto const v) { return std::string(&*v.begin(), std::ranges::distance(v)); };
-				for (const std::string& num : std::views::split(groupsStr, ',') | std::views::transform(viewToString))
+				//row.groupSizes
+				//	= std::views::split(groupsStr, ',')
+				//	| std::views::transform([] (auto const v) { return std::string(&*v.begin(), std::ranges::distance(v)); })
+				//	| std::views::transform([] (const std::string& s) { return std::stoi(s);  })
+				//	| std::ranges::to<std::vector>(); // requires C++23
+
+				for (const int groupSize : std::views::split(groupsStr, ',')
+					| std::views::transform([] (auto const v) { return std::string(&*v.begin(), std::ranges::distance(v)); })
+					| std::views::transform([] (const std::string& s) { return std::stoi(s);  }))
 				{
-					Group g;
-					g.index = row.groups.size();
-					g.size = std::stoi(num);
-					row.groups.push_back(g);
+					row.groupSizes.push_back(groupSize);
 				}
 			}
 		}
@@ -220,7 +192,7 @@ namespace d12
 			begin(springs.rows),
 			end(springs.rows),
 			0ull,
-			[] (uint64_t sum, const SpringRow& row) { return sum + row.validPermutations.size(); }
+			[] (uint64_t sum, const SpringRow& row) { return sum + row.numPermutations; }
 		);
 	}
 
@@ -244,10 +216,10 @@ namespace d12
 					oldRow.basePermutation.end()
 				);
 
-				newRow.groups.insert(
-					newRow.groups.end(),
-					oldRow.groups.begin(),
-					oldRow.groups.end()
+				newRow.groupSizes.insert(
+					newRow.groupSizes.end(),
+					oldRow.groupSizes.begin(),
+					oldRow.groupSizes.end()
 				);
 			}
 		}
@@ -258,14 +230,16 @@ namespace d12
 			begin(springs.rows),
 			end(springs.rows),
 			0ull,
-			[] (uint64_t sum, const SpringRow& row) { return sum + row.validPermutations.size(); }
+			[] (uint64_t sum, const SpringRow& row) { return sum + row.numPermutations; }
 		);
 	}
 
 	static std::pair<uint64_t, uint64_t> process(const char* filename)
 	{
-		Springs springs(filename);
-		return std::make_pair(partOne(springs), partTwo(springs));
+		const Springs springs(filename);
+		const auto pt1 = partOne(springs);
+		const auto pt2 = partTwo(springs);
+		return std::make_pair(pt1, pt2);
 	}
 }
 
@@ -281,5 +255,5 @@ static void processPrintAndAssert(const char* filename, std::optional<std::pair<
 void day12()
 {
 	processPrintAndAssert("../data/12/test.txt", std::make_pair(21ull, 525152ull));
-	processPrintAndAssert("../data/12/real.txt", std::make_pair(7025ull, 0ull));
+	processPrintAndAssert("../data/12/real.txt", std::make_pair(7025ull, 11461095383315ull));
 }
