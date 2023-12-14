@@ -169,7 +169,7 @@ namespace d12
 
 				for (const int groupSize : std::views::split(groupsStr, ',')
 					| std::views::transform([] (auto const v) { return std::string(&*v.begin(), std::ranges::distance(v)); })
-					| std::views::transform([] (const std::string& s) { return std::stoi(s);  }))
+					| std::views::transform([] (const std::string& s) { return std::stoi(s); }))
 				{
 					row.groupSizes.push_back(groupSize);
 				}
