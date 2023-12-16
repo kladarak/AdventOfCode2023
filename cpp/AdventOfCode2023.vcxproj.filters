@@ -58,6 +58,9 @@
     <Filter Include="Resource Files\day15">
       <UniqueIdentifier>{f8117688-842e-4de4-b2ab-7ac85567899d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\day16">
+      <UniqueIdentifier>{9917e5c0-4a45-4ce1-ad2c-2f77d749a0ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\day01.cpp">
@@ -109,6 +112,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\day15.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\day16.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -226,6 +232,12 @@
     </Text>
     <Text Include="..\data\15\test.txt">
       <Filter>Resource Files\day15</Filter>
+    </Text>
+    <Text Include="..\data\16\real.txt">
+      <Filter>Resource Files\day16</Filter>
+    </Text>
+    <Text Include="..\data\16\test.txt">
+      <Filter>Resource Files\day16</Filter>
     </Text>
   </ItemGroup>
 </Project>
